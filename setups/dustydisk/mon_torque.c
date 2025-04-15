@@ -13,7 +13,7 @@ void mon_torq_cpu () {
   INPUT(Density);
   OUTPUT(Slope);
   real rplanet = sqrt(Xplanet*Xplanet+Yplanet*Yplanet+Zplanet*Zplanet);
-  real rsmoothing = THICKNESSSMOOTHING*ASPECTRATIO*pow(rplanet/R0,FLARINGINDEX)*rplanet;
+  //real rsmoothing = THICKNESSSMOOTHING*ASPECTRATIO*pow(rplanet/R0,FLARINGINDEX)*rplanet;
 //<\USER_DEFINED>
 
 
@@ -25,7 +25,6 @@ void mon_torq_cpu () {
   int size_x = Nx+2*NGHX;
   int size_y = Ny+2*NGHY;
   int size_z = Nz+2*NGHZ;
-  real rsm2 = rsmoothing*rsmoothing;
   real rh = pow(PLANETMASS/3./MSTAR, 1./3.)*rplanet;
 //<\EXTERNAL>
 
@@ -45,6 +44,9 @@ void mon_torq_cpu () {
   real fyi;
   real planet_distance;
   real hill_cut;
+  real rsm2;
+  real rroche;
+  real rsmoothing;
 //<\INTERNAL>
 
 //<CONSTANT>
@@ -78,6 +80,10 @@ void mon_torq_cpu () {
 #endif
 //<#>
 	ll = l;
+  rroche = rplanet*rh;
+  rsmoothing = rroche*ROCHESMOOTHING;
+  rsm2 = rsmoothing*rsmoothing;
+
 	cellmass = Vol(i,j,k)*dens[ll];
 #ifdef CARTESIAN
 	dx = xmed(i)-Xplanet;
@@ -100,7 +106,7 @@ void mon_torq_cpu () {
 	dz = ymed(j)*cos(zmed(k))-Zplanet;
 #endif
 #endif
-	dist2 = dx*dx+dy*dy+dz*dz;
+  dist2 = dx*dx+dy*dy+dz*dz;
 	dist2 += rsm2;
 	distance = sqrt(dist2);
 	InvDist3 = 1.0/(dist2*distance);
@@ -122,7 +128,7 @@ void mon_torq_cpu () {
 	    hill_cut = pow(sin((planet_distance/rh-.5)*M_PI),2.);
     
 	}
-
+interm[ll]*= hill_cut;
 #endif
 
 //<\#>
