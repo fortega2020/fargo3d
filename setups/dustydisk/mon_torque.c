@@ -20,12 +20,12 @@ void mon_torq_cpu () {
 //<EXTERNAL>
   real* dens = Density->field_cpu;
   real* interm = Slope->field_cpu;
+  real* mplanet = Sys->mass_cpu;
   int pitch  = Pitch_cpu;
   int stride = Stride_cpu;
   int size_x = Nx+2*NGHX;
   int size_y = Ny+2*NGHY;
   int size_z = Nz+2*NGHZ;
-  real rh = pow(PLANETMASS/3./MSTAR, 1./3.)*rplanet;
 //<\EXTERNAL>
 
 //<INTERNAL>
@@ -47,6 +47,8 @@ void mon_torq_cpu () {
   real rsm2;
   real rroche;
   real rsmoothing;
+  real mp;
+  real rh;
 //<\INTERNAL>
 
 //<CONSTANT>
@@ -80,6 +82,8 @@ void mon_torq_cpu () {
 #endif
 //<#>
 	ll = l;
+  mp = mplanet[0];
+  rh = pow(mp/3./MSTAR, 1./3.)*rplanet;
   rroche = rplanet*rh;
   rsmoothing = rroche*ROCHESMOOTHING;
   rsm2 = rsmoothing*rsmoothing;
@@ -126,7 +130,6 @@ void mon_torq_cpu () {
 	    hill_cut = 1.0;
 	  else
 	    hill_cut = pow(sin((planet_distance/rh-.5)*M_PI),2.);
-    
 	}
 interm[ll]*= hill_cut;
 #endif
