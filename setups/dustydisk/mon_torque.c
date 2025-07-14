@@ -13,6 +13,7 @@ void mon_torq_cpu () {
   INPUT(Density);
   OUTPUT(Slope);
   real rplanet = sqrt(Xplanet*Xplanet+Yplanet*Yplanet+Zplanet*Zplanet);
+  real mplanet = MplanetVirtual;
   //real rsmoothing = THICKNESSSMOOTHING*ASPECTRATIO*pow(rplanet/R0,FLARINGINDEX)*rplanet;
 //<\USER_DEFINED>
 
@@ -20,7 +21,6 @@ void mon_torq_cpu () {
 //<EXTERNAL>
   real* dens = Density->field_cpu;
   real* interm = Slope->field_cpu;
-  real* mplanet = Sys->mass_cpu;
   int pitch  = Pitch_cpu;
   int stride = Stride_cpu;
   int size_x = Nx+2*NGHX;
@@ -47,7 +47,6 @@ void mon_torq_cpu () {
   real rsm2;
   real rroche;
   real rsmoothing;
-  real mp;
   real rh;
 //<\INTERNAL>
 
@@ -81,14 +80,14 @@ void mon_torq_cpu () {
       for (i=0; i<size_x; i++ ) {
 #endif
 //<#>
-	ll = l;
-  mp = mplanet[0];
-  rh = pow(mp/3./MSTAR, 1./3.)*rplanet;
+	ll = l;  
+  rh = pow(mplanet/3./MSTAR, 1./3.)*rplanet;
   rroche = rplanet*rh;
   rsmoothing = rroche*ROCHESMOOTHING;
   rsm2 = rsmoothing*rsmoothing;
 
 	cellmass = Vol(i,j,k)*dens[ll];
+  
 #ifdef CARTESIAN
 	dx = xmed(i)-Xplanet;
 	dy = ymed(j)-Yplanet;
