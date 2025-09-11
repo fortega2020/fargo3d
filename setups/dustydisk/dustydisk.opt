@@ -8,6 +8,8 @@ FLUIDS := 0 1
 NFLUIDS = 2
 FARGO_OPT += -DNFLUIDS=${NFLUIDS}
 
+MONITOR_SCALAR = MASS | MOM_X | TORQ
+
 #Enable the drag force between fluids
 FARGO_OPT += -DDRAGFORCE      
 #We select the drag model (see src/collision_kernel.h)
@@ -28,3 +30,14 @@ FARGO_OPT += -DPOTENTIAL
 
 #Buffer zones before applying boundaries
 FARGO_OPT += -DSTOCKHOLM
+
+FARGO_OPT += -DHILLCUT
+
+FARGO_OPT += -DALPHAVISCOSITY
+
+#Cuda blocks
+ifeq (${GPU}, 1)
+FARGO_OPT += -DBLOCK_X=16
+FARGO_OPT += -DBLOCK_Y=16
+FARGO_OPT += -DBLOCK_Z=1
+endif
