@@ -12,8 +12,8 @@ void mon_torq_cpu () {
 //<USER_DEFINED>
   INPUT(Density);
   OUTPUT(Slope);
-  real rplanet = sqrt(Xplanet*Xplanet+Yplanet*Yplanet+Zplanet*Zplanet);
-  real mplanet = MplanetVirtual;
+  real rpl = sqrt(Xplanet*Xplanet+Yplanet*Yplanet+Zplanet*Zplanet);
+  real mpl = MplanetVirtual;
   //real rsmoothing = THICKNESSSMOOTHING*ASPECTRATIO*pow(rplanet/R0,FLARINGINDEX)*rplanet;
 //<\USER_DEFINED>
 
@@ -26,6 +26,9 @@ void mon_torq_cpu () {
   int size_x = Nx+2*NGHX;
   int size_y = Ny+2*NGHY;
   int size_z = Nz+2*NGHZ;
+  real rplanet = rpl;
+  real mplanet = mpl;
+  real rochesmoothing = ROCHESMOOTHING;
 //<\EXTERNAL>
 
 //<INTERNAL>
@@ -83,7 +86,7 @@ void mon_torq_cpu () {
 	ll = l;  
   rh = pow(mplanet/3./MSTAR, 1./3.)*rplanet;
   rroche = rplanet*rh;
-  rsmoothing = rroche*ROCHESMOOTHING;
+  rsmoothing = rroche*rochesmoothing;
   rsm2 = rsmoothing*rsmoothing;
 
 	cellmass = Vol(i,j,k)*dens[ll];
